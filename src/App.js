@@ -1,63 +1,61 @@
 import logo from './logo.svg';
 import './App.css';
+
 import CourseList from './CourseList';
 import { useEffect, useState } from 'react';
+
 import axios from 'axios';
 import CourseSave from './CourseSave';
 
 function App() {
 
-  let [courseSate, setCourseState] = useState({
-    courses: [{
-      id: 1,
-      code: 'AA',
-      name: 'AAA Name'
-    }, {
-      id: 1,
-      code: 'B',
-      name: 'BBB Name'
-    }]
+  let [courseState, setCourseState] = useState({
+    courses: [
+      { id: 1, code: 'xx', name: 'x' },
+      { id: 2, code: 'xx', name: 'x' }
+    ]
   });
 
   let [courseSaveState, setCourseSaveState] = useState({
-    name: '', code: ''
-  });
-  
-  function nameChangedEvent(event){
-    setCourseSaveState({...courseSaveState, name: event.target.value})
-  }
+    name: '',
+    code: ''
+  })
 
   function saveCourse() {
+    // send request
     console.log(courseSaveState);
-    console.log("Course saved.");
+    console.log('course saved.')
   }
+
+  function nameChangedEvent(event) {
+    setCourseSaveState({ ...courseSaveState, name: event.target.value })
+  }
+
 
   useEffect(() => {
     axios.get('http://localhost:8080/courses')
       .then(res => {
-        console.log(res)
         setCourseState({ courses: res.data })
-      }).catch(err => {
-        console.log(err)
       })
-  }, []);
+  }, [])
 
+  return (
+    <div className="App">
 
+      {
+        courseState.courses.map((item) => {
+          return <CourseList
+            courseCode={item.code}
+            courseName={item.name} />
+        })
+      }
 
-  return (< div className="App" >
-    {
-      courseSate.courses.map(item => {
-        return <CourseList courseName={item.name}
-          courseCode={item.code}
-        />
-      })
-    }
-    <CourseSave onClickFn= {saveCourse} 
-    nameChangedEvent = {(event)=> {nameChangedEvent(event)}}
-    courseSaveName = {courseSaveState.name}
-     />
-     
-  </div >
+      <CourseSave onClickFn={saveCourse}
+        nameChangedEvent={(event) => { nameChangedEvent(event) }}
+        // courseSaveName={courseSaveState.name}
+      />
+
+    </div>
   );
 }
 
